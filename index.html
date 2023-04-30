@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+   <meta charset="utf-8">
+   <title>Ofer and Erez Spaceship Game</title>
+   <link rel="stylesheet" type="text/css" href="style.css">
+   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+
+<body>
+   <header>
+        <div class="header-content">
+          <div class="logo-container">
+            <li id="logo" class="logo"></li>
+          </div>
+          <div class="buttons-container">
+            <ul>
+              <li><button onclick="showPage('homePage')">Home Page</button></li>
+              <li><button onclick="showPage('signupPage')">Sign-Up</button></li>
+              <li><button onclick="showPage('loginPage')">Log-In</button></li>
+              <li><button data-modal-target="#modal">About</button></li>
+              <!-- <li><button id="startButton" onclick="showPage('play_game')">startButton</button></li> -->
+            </ul>
+          </div>
+        </div>
+    </header>
+
+   <div id="content" class="content">
+
+      <!-- Welcome page -->
+      <div id="homePage" class="homePage">
+         <div class="home-container">
+         <h1 class="welcome-message">Welcome to the website!</h1>
+         <div class="home-buttons">
+            <button onclick="showPage('loginPage')">Log in</button>
+            <button onclick="showPage('signupPage')">Sign up</button>
+         </div>
+         </div>
+      </div>
+      <!-- end of Welcome -->
+ 
+
+      <!-- Signup page -->
+      <div id="signupPage" class="page">
+         <div class="signup-conteiner">
+            <form id="signup-form" class="signup-form">
+               <h2 class="sign_up_title">Sign Up</h2>
+               <input type="text" id="username" class="sign_up_input" name="username" autofocus placeholder="User name" required><br>
+               <input type="password" id="password" class="sign_up_input" name="password" autofocus placeholder="Password" required><br>
+               <input type="password" id="confirm-password" class="sign_up_input" name="confirm-password" autofocus placeholder="confirm-password" required><br>
+               <input type="text" id="first-name" class="sign_up_input" name="first-name" autofocus placeholder="first-name" required><br>
+               <input type="text" id="last-name" class="sign_up_input" name="last-name" autofocus placeholder="last-name" required><br>
+               <input type="email" id="Email" class="sign_up_input" name="email" autofocus placeholder="Email" required><br>
+               <!-- <label for="dob">Date of Birth:</label><br> -->
+               <input type="date" id="dob" class="sign_up_input" name="dob" autofocus placeholder="Date of Birth" required><br>
+               <button type="button" class="sign_up_button" onclick="signUp()">Sign Up</button>
+               <br><br><div id="input-error" class="error-message"></div>
+            </form>
+         </div>
+      </div> <!-- end of sign_up   -->
+
+      <!-- Login page -->
+      <div id="loginPage" class="page">
+         <div class="login-container">
+         <form id="login-form">
+            <h2 class="log_in_title">Log In</h2>
+            <div class="log_in_input_container">
+               <input type="text" class="log_in_input" id="log_in_username" name="log_in_username" placeholder="User name" required>
+               <label for="log_in_username">User name</label>
+            </div>
+            <div class="log_in_input_container">
+               <input type="password" class="log_in_input" id="log_in_password" name="log_in_password" placeholder="Password" required>
+               <label for="log_in_password">Password</label>
+            </div>
+            <button type="button" class="log_in_button" onclick="logIn()">Log In</button>
+         </form>
+         </div>
+      </div> <!-- end of loginPage   -->
+ 
+
+      <!-- Modal -->
+      <div class="modal" id="modal" role="dialog">
+         
+         <!-- Modal content-->
+         <div class="modal-header">
+            <div class="title">About</div>
+            <button data-close-button class="close-button">&times;</button>
+         </div>
+         <div class="modal-body">
+            Our names:<br>
+            Ofer Waldmann and Erez Kimmel<br><br>
+            Game features:<br>
+             - Your goal of the game is to kill all enemy invaders before time is over or they kill you!<br>
+             - There is a data bar showing your current score, how many lives left and time left for the game<br>
+             <br><br>Problems we encountered:<br>
+            1. Very hard to debug<br>
+            2. We had problems implementing the configuration page before starting the game<br><br>
+         </div>
+      </div>
+      <div id="overlay"></div>
+
+
+      <!-- Game page -->
+      <div id="play_game" class="page">
+         <div class="configuration_page" id="configuration_page-game">
+         </div> <!-- end of configuration_page   -->
+         <div class="actual_game-container" id="actual_game">
+            <canvas id="theCanvas"></canvas>
+
+            <audio id="game_music" preload = "auto" loop><source src="Audio_GameSong1.mp3" type="audio/mpeg"></audio>
+            <audio id="hit_bad" preload = "auto"><source src="Audio_enemy_dead.mp3" type="audio/mpeg"></audio>
+            <audio id="hit_good" preload = "auto"><source src="Audio_player_dead.mp3" type="audio/mpeg"></audio>
+            <audio id="shot_sound" preload = "auto"><source src="Audio_player_shoot.mp3" type="audio/mpeg"></audio>
+
+            <div class="dataDiv">
+               <p id="data">
+                  <span>Score:</span>
+                  <span id="scoreEl">0</span>
+                  <span>Lives:</span>
+                  <span id="livesEl">3</span>
+
+                  <!-- add timer -->
+                  <span>Time:</span>
+                  <span id="timeEl">0:00</span>
+               </p>
+            </div>
+         </div> <!-- end of actual_game   -->
+      </div> <!-- end of play game   -->
+
+
+      <!-- Game Over page -->
+      <div id="GameOver" class="page">
+         <div class="GameOver-container">
+            <h1 class="GameOver-message">Game Over!!</h1>
+            <span id="message"></span>
+            <!-- <p>Score: <span id="score1"></span></p> -->
+            <!-- <br> -->
+            <p>Game History: <span id="scores"></span></p>
+            <button onclick="PlayAgain()">Play Again</button>
+         </div>
+      </div><!-- end of game over   -->
+
+   </div> <!-- end of content   -->
+
+   <!-- <p style="position: fixed; bottom: 200px;"><input id = "startButton" type = "button" value = "Start Game"></p> -->
+
+   <footer>
+      <!-- <h2 id="leftlogo" class="copyright">© OFEREZ</h2> -->
+      <h3 id="middlelogo">This game was developed and by Ofer and Erez. If you liked it, feel free to contact us via mail at erezkim@post.bgu.ac.il or at offerwal@post.bgu.ac.il</h3>
+      <!-- <h2 id="rightlogo" class="copyright">© OFEREZ</h2> -->
+   </footer>
+
+   <script src="ships.js"></script>
+
+</body>
+
+</html>
