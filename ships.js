@@ -83,7 +83,7 @@ class Player {
 
       // creating our ship Image
       playerImage = new Image();
-//       playerImage.src = './img/hero.png';
+      // playerImage.src = './img/hero.png';
       playerImage.src = 'hero.png';
       playerImage.onload = () => {
          var shipscale = 0.2;
@@ -277,8 +277,10 @@ class Grid {
    }
 }
 
-var myScores = []
+//###############################################################################################################
 
+
+var myScores = []
 var player = new Player();
 var projectiles = [];
 var grids = [];
@@ -296,8 +298,6 @@ let game = {
 score = 0;
 lives = 3;
 startedNewGame = true;
-
-
 var allUsers = []
 
 
@@ -356,6 +356,7 @@ function animate() {
                invaderProjectiles.splice(index, 1);
             }, 0)
             createParticles({object: player, how_many:50, fade: true, color: 'white'}); // ship explode
+            hit_good.play()
             if (lives > 1) {
                lives = lives - 1;
                livesEl.innerHTML = lives;
@@ -367,7 +368,6 @@ function animate() {
                lives = lives - 1;
                livesEl.innerHTML = lives;
                console.log("You Lost")
-               // alert("You Lost")
                player.opacity = 0;
                game.over = true;
                GameOver(2, score, timeElapsed)
@@ -415,6 +415,7 @@ function animate() {
                      scoreEl.innerHTML = score;
                      console.log(score);
                      createParticles({object: invader, how_many:15, fade: true, color: '#BAA0DE'});
+                     hit_bad.play()
                      grid.invaders.splice(i, 1);
                      projectiles.splice(j, 1);
 
@@ -579,10 +580,6 @@ function newGame(){
       showPage("play_game");
       animate();
       startTimer(16); // change time!!!
-
-      // play game music
-      // var gameMusic = document.getElementById("game_music");
-      // game_music.currentTime = 0
       game_music.play();
 
 }
