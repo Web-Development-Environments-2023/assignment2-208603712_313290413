@@ -83,8 +83,8 @@ class Player {
 
       // creating our ship Image
       playerImage = new Image();
-      playerImage.src = './img/hero.png';
-      // playerImage.src = 'hero.png';
+//       playerImage.src = './img/hero.png';
+      playerImage.src = 'hero.png';
       playerImage.onload = () => {
          var shipscale = 0.2;
          this.Image = playerImage;
