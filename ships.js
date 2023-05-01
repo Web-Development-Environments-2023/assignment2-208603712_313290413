@@ -490,16 +490,16 @@ function GameOver(gameOverType, score, gameTime) {
    // InAGame = 0;
    // Clear the message and score elements
    if(gameOverType===1) {
-      document.getElementById('message').innerHTML = 'Chanpion!'
+      document.getElementById('GameOverMessage').innerHTML = 'Chanpion!'
    }
    else if(gameOverType===2) {
-      document.getElementById('message').innerHTML = 'You Lost'
+      document.getElementById('GameOverMessage').innerHTML = 'You Lost'
    }
    else if(gameOverType===3 && score < 100) {
-      document.getElementById('message').innerHTML = 'you can do better!'
+      document.getElementById('GameOverMessage').innerHTML = 'you can do better!'
    }
    else if(gameOverType===3 && score >= 100) {
-      document.getElementById('message').innerHTML = 'Winner!'
+      document.getElementById('GameOverMessage').innerHTML = 'Winner!'
    }
    else if(gameOverType === 4) {
       console.log("exiting")
