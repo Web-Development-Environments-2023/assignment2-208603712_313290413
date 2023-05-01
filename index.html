@@ -21,7 +21,7 @@
               <li><button onclick="showPage('signupPage')">Sign-Up</button></li>
               <li><button onclick="showPage('loginPage')">Log-In</button></li>
               <li><button data-modal-target="#modal">About</button></li>
-              <!-- <li><button id="startButton" onclick="showPage('play_game')">startButton</button></li> -->
+
             </ul>
           </div>
         </div>
@@ -101,18 +101,32 @@
       </div>
       <div id="overlay"></div>
 
+      <div id="configurationPage" class="page">
+      <div class="configuration-container" id="configuration_page-game">
+         <form class="configuration_form">
+            <label for="shoot_key">Shooting Key:</label>
+            <input type="text" id="shoot_key" name="shoot_key" value="Space">
+            <br>
+            <label for="game_duration">Game Duration (minutes):</label>
+            <input type="number" id="game_duration" name="game_duration" value="2">
+            <br><br>
+            <div id="configuration_input_error" class="error-message"></div>
+            <button type="button" class="save_button" onclick="saveConfiguration()">Save</button>
+         </form>
+      </div>
+      </div>
+
+
 
       <!-- Game page -->
       <div id="play_game" class="page">
-         <div class="configuration_page" id="configuration_page-game">
-         </div> <!-- end of configuration_page   -->
          <div class="actual_game-container" id="actual_game">
             <canvas id="theCanvas"></canvas>
 
-            <audio id="game_music" preload = "auto" loop><source src="Audio_GameSong1.mp3" type="audio/mpeg"></audio>
-            <audio id="hit_bad" preload = "auto"><source src="Audio_enemy_dead.mp3" type="audio/mpeg"></audio>
-            <audio id="hit_good" preload = "auto"><source src="Audio_player_dead.mp3" type="audio/mpeg"></audio>
-            <audio id="shot_sound" preload = "auto"><source src="Audio_player_shoot.mp3" type="audio/mpeg"></audio>
+            <audio id="game_music" preload = "auto" loop><source src="audio_GameSong.mp3" type="audio/mpeg"></audio>
+            <audio id="hit_bad" preload = "auto"><source src="audio_enemy_killed.mp3" type="audio/mpeg"></audio>
+            <audio id="hit_good" preload = "auto"><source src="audio_player_killed.mp3" type="audio/mpeg"></audio>
+            <audio id="shot_sound" preload = "auto"><source src="audio_player_shoot.mp3" type="audio/mpeg"></audio>
 
             <div class="dataDiv">
                <p id="data">
@@ -134,9 +148,7 @@
       <div id="GameOver" class="page">
          <div class="GameOver-container">
             <h1 class="GameOver-message">Game Over!!</h1>
-            <span id="message"></span>
-            <!-- <p>Score: <span id="score1"></span></p> -->
-            <!-- <br> -->
+            <span id="GameOverMessage"></span>
             <p>Game History: <span id="scores"></span></p>
             <button onclick="PlayAgain()">Play Again</button>
          </div>
