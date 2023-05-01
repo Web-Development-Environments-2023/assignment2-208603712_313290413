@@ -22,6 +22,9 @@ var currentUser; // the last user who loged in to the system
 var logedIn = 0;
 var InAGame;
 
+var shooting_Key
+var Game_Time
+
 // all the sounds
 var hit_bad;
 var game_music;
@@ -53,7 +56,10 @@ keys = {
    down: {
       pressed: false
    },
-   space: {
+   // space: {
+   //    pressed: false
+   // }
+   shoot: {
       pressed: false
    }
 }
@@ -579,18 +585,17 @@ function newGame(){
       setUpGame()
       showPage("play_game");
       animate();
-      startTimer(16); // change time!!!
+      startTimer(Game_Time * 60); // change time!!!
       game_music.play();
-
 }
 
 
 function PlayAgain() {
-   game.active = true;
-   console.log("play again")
-   startedNewGame = true;
-   setUpGame()
-   showPage("play_game");
+   // game.active = true;
+   // console.log("play again")
+   // startedNewGame = true;
+   // setUpGame()
+   // showPage("play_game");
    newGame();
    return;
 }
@@ -606,7 +611,7 @@ function startTimer(time) {
    timeRemaining = time; // set the remaining time for the current game
    const timerEl = document.getElementById("timeEl");
    timerEl.innerHTML = formatTime(timeRemaining); // update timer display with initial time value
- 
+
    timerInterval = setInterval(() => {
      timeRemaining--;
      timeElapsed++;
@@ -654,8 +659,8 @@ window.addEventListener('keydown', ({key}) => {
       case 'ArrowDown':
          keys.down.pressed = true;
          break;
-      case ' ':
-         keys.space.pressed = true;
+      case shooting_Key:
+         keys.shoot.pressed = true;
          projectiles.push(new Projectile({
             position: {
                x: player.position.x + player.width / 2,
@@ -684,9 +689,11 @@ window.addEventListener('keyup', ({key}) => {
       case 'ArrowDown':
          keys.down.pressed = false;
          break;
-      case ' ':
-         keys.space.pressed = false;
-      
+      // case ' ':
+      case shooting_Key:   
+         // keys.space.pressed = false;
+         keys.shoot.pressed = false;
+         break;
    }
 })
 
@@ -743,6 +750,7 @@ function showPage(pageId) {
    document.getElementById('play_game').style.display = 'none';
    document.getElementById('homePage').style.display = 'none';
    document.getElementById('GameOver').style.display = 'none';
+   document.getElementById('configurationPage').style.display = 'none';
 
    document.getElementById(pageId).style.display = 'block';
 }
@@ -849,7 +857,7 @@ function logIn() {
       logedIn = 1;
       document.getElementById("log_in_username").value = "";
       document.getElementById("log_in_password").value = "";
-      newGame();
+      showPage('configurationPage');
       return;
    }
 
@@ -860,11 +868,38 @@ function logIn() {
       currentUser = user;
       document.getElementById("log_in_username").value = "";
       document.getElementById("log_in_password").value = "";
-      newGame();
+      showPage('configurationPage');
       return;
    }
    
    alert("Invalid username or password");
+}
+
+
+//##############################################################################################################
+
+// Event listener for changing shooting key
+document.getElementById('shoot_key').addEventListener('keydown', (event) => {
+   event.preventDefault(); // prevent the default behavior of the input field
+   shootingKey = event.key; // set the shooting key to the key pressed
+   if(shootingKey === ' '){
+      document.getElementById('shoot_key').value = 'Space'
+      return;
+   } 
+   document.getElementById('shoot_key').value = shootingKey; // update the input field with the new value
+});
+
+function saveConfiguration() {
+   shooting_Key = document.getElementById('shoot_key').value
+   if(shooting_Key === 'Space') shooting_Key = ' '
+   Game_Time = document.getElementById('game_duration').value
+   // Get the error message elements
+   const error = document.getElementById("configuration_input_error");
+   if (Game_Time < 2) {
+      error.innerText = "Game duration can't be less than 2 minutes";
+      return;
+   }
+   newGame();
 }
 
    const openModalButtons = document.querySelectorAll('[data-modal-target]')
@@ -873,14 +908,12 @@ function logIn() {
 
    openModalButtons.forEach(button => {
       button.addEventListener('click', () => {
-         console.log("open_here");
          const modal = document.querySelector(button.dataset.modalTarget)
          openModal(modal)
       })
    })
 
    overlay.addEventListener('click', () => {
-      console.log("here");
       const modals = document.querySelectorAll('.modal.active')
       modals.forEach(modal => {
          closeModal(modal);
@@ -898,7 +931,6 @@ function logIn() {
 
    closeModalButtons.forEach(button => {
       button.addEventListener('click', () => {
-         console.log("close_here");
          const modal = button.closest('.modal')
          closeModal(modal)
       })
