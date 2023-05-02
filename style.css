@@ -67,6 +67,24 @@ cursor: pointer;
     left: 35%;
 }
 
+.buttons-container button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .buttons-container button:hover {
+    background-color: #e2e767;
+  }
+
 .logo {
 height: 70px;
 width: 120px;
@@ -206,6 +224,21 @@ color: white;
 z-index: 10;
 }
 
+/* Center the game container */
+#actual_game {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+}
+
+/* Center the canvas */
+#theCanvas {
+   margin: 0 auto;
+}
+
+
 .configuration-container {
     display: flex;
     margin: auto;
@@ -305,7 +338,7 @@ z-index: 10;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
+    
     background-color: rgba(255,255,255,0.15);
     margin: auto;
     width: 50%;
@@ -315,7 +348,7 @@ z-index: 10;
   }
   
 .log_in_title {
-    font-size: 2rem;
+    font-size: 4rem;
     margin: 2rem;
 }
   
