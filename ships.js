@@ -287,8 +287,6 @@ class Grid {
  
    update(){
       if (timeElapsed > 0 && timeElapsed % 5 === 0 && frames % 301 === 0 && gridCounter < 5) {
-         console.log("enter update grid speed")
-         console.log(timeElapsed, this.velocity, frames)
          this.velocity = {x: this.velocity.x * 1.2, y: this.velocity.y};
          gridCounter++;
       }
@@ -387,7 +385,6 @@ function animate() {
             MoveShipToMiddle()
             if (lives > 1) {
                lives = lives - 1;
-               console.log("kives: ", lives)
                livesEl.innerHTML = lives;
             }
             else {
@@ -396,7 +393,6 @@ function animate() {
                }, 0)
                lives = lives - 1;
                livesEl.innerHTML = lives;
-               console.log("kives: ", lives)
                console.log("You Lost")
                player.opacity = 0;
                game.over = true;
@@ -512,7 +508,6 @@ function animate() {
 
 
 function GameOver(gameOverType, score, gameTime) {
-   console.log("type: ", gameOverType)
    resetTimer()
    game_music.pause();
 
