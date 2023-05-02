@@ -292,7 +292,7 @@ class Grid {
       }
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
-      if(this.position.x + this.width >= canvas.width || this.position.x <= 0) {
+      if(this.position.x + this.width + 120 >= canvas.width || this.position.x <= 0) {
          this.velocity.x = - this.velocity.x
       }
    }
@@ -611,6 +611,7 @@ function PlayAgain() {
    return;
 }
 
+// function restartGame(){}
 
 
 let timeElapsed = 0; // track the elapsed time in seconds
