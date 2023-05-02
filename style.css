@@ -120,7 +120,21 @@ footer h3 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
+}
+
+/* .homePage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 800px;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+  } */
   
 .home-container {
     display: flex;
@@ -150,6 +164,42 @@ footer h3 {
     align-items: center;
     width: 80%;
     max-width: 400px;
+  }
+
+  .configuration_form button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .configuration_form button:hover {
+    background-color: #3e8e41;
+  }
+
+  .GameOver-container button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .GameOver-container button:hover {
+    background-color: #3e8e41;
   }
   
   .home-buttons button {
@@ -481,5 +531,7 @@ z-index: 10;
     opacity: 1;
     pointer-events: all;
 }
+
+
 
 
