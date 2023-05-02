@@ -32,7 +32,7 @@
       <!-- Welcome page -->
       <div id="homePage" class="homePage">
          <div class="home-container">
-         <h1 class="welcome-message">Welcome to the website!</h1>
+         <h1 class="welcome-message">Welcome to our Spaceship game!</h1>
          <div class="home-buttons">
             <button onclick="showPage('loginPage')">Log in</button>
             <button onclick="showPage('signupPage')">Sign up</button>
@@ -111,7 +111,7 @@
             <input type="number" id="game_duration" name="game_duration" value="2">
             <br><br>
             <div id="configuration_input_error" class="error-message"></div>
-            <button type="button" class="save_button" onclick="saveConfiguration()">Save</button>
+            <button type="button" class="save_button" onclick="saveConfiguration()">Start Game</button>
          </form>
       </div>
       </div>
@@ -120,7 +120,7 @@
 
       <!-- Game page -->
       <div id="play_game" class="page">
-         <div class="actual_game-container" id="actual_game">
+         <div class="actual_game_container" id="actual_game">
             <canvas id="theCanvas"></canvas>
 
             <audio id="game_music" preload = "auto" loop><source src="audio_GameSong.mp3" type="audio/mpeg"></audio>
@@ -147,7 +147,7 @@
       <!-- Game Over page -->
       <div id="GameOver" class="page">
          <div class="GameOver-container">
-            <h1 class="GameOver-message">Game Over!!</h1>
+            <h1 class="GameOver-title">Game Over!!</h1>
             <span id="GameOverMessage"></span>
             <p>Game History: <span id="scores"></span></p>
             <button onclick="PlayAgain()">Play Again</button>
