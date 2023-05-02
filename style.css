@@ -233,7 +233,9 @@ height: 950px;
 
 }
 
-#play_game{
+#actual_game{
+    /* background-image: url(bg.jpg); */
+    background-color: black;
 }
 
 #signupPage {
@@ -255,7 +257,7 @@ height: 950px;
 }
 
 #GameOverMessage{
-    color: white;
+    color: rgb(53, 206, 19);
     font-size: 44px;
     font-weight: bold;
     text-align: center;
@@ -265,13 +267,14 @@ height: 950px;
 
 #data {
 position: absolute;
-top: 10px;
-left: 10px;
+top: 20px;
+left: 40%;
 margin: 0;
 font-family: sans-serif;
-font-size: 18px;
+font-size: 38px;
 color: white;
 z-index: 10;
+
 }
 
 /* Center the game container */
@@ -288,6 +291,27 @@ z-index: 10;
    margin: 0 auto;
 }
 
+#actual_game {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .dataDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2rem;
+    margin-top: 1rem;
+  }
+  
+  .dataDiv span {
+    margin-right: 1rem;
+  }
+  
+  
 
 .configuration-container {
     display: flex;
