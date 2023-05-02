@@ -17,10 +17,12 @@ var rowInvaders;
 var invaderWidth;
 var invaderHeight;
 var startedNewGame;
-// var allUsers = []; // all the users that loged in to the system after page reload
 var currentUser; // the last user who loged in to the system
 var logedIn = 0;
 var InAGame;
+var FlagShoot = true
+
+var gridCounter = 1;
 
 var shooting_Key
 var Game_Time
@@ -56,9 +58,6 @@ keys = {
    down: {
       pressed: false
    },
-   // space: {
-   //    pressed: false
-   // }
    shoot: {
       pressed: false
    }
@@ -89,14 +88,14 @@ class Player {
 
       // creating our ship Image
       playerImage = new Image();
-      // playerImage.src = './img/hero.png';
       playerImage.src = 'hero.png';
       playerImage.onload = () => {
-         var shipscale = 0.2;
+         var shipscale = 0.15;
          this.Image = playerImage;
          this.width = playerImage.width * shipscale;
          this.height = playerImage.height * shipscale;
-         this.position = {
+         this.position = 
+         {
             x: canvas.width / 2 - this.width / 2,
             y: canvas.height - this.height - 30
          }
@@ -186,12 +185,12 @@ class InvaderProjectile {
       this.position = position;
       this.velocity = velocity;
 
-      this.width = 3;
-      this.height = 10;
+      this.width = 5;
+      this.height = 15;
    }
 
    draw() {
-      context.fillStyle = 'white';
+      context.fillStyle = 'yellow';
       context.fillRect(this.position.x, this.position.y, this.width, this.height)
    }
 
@@ -202,27 +201,33 @@ class InvaderProjectile {
    }
 }
 
-class Invader{
-   constructor({position}) {
-      this.velocity = {
-         x: 0,
-         y: 0
-      }
-
-      // creating our invaders Image
-      invaderImage = new Image();
-      invaderImage.src = 'invader.png';
-      invaderImage.onload = () =>{
-         var invaderscale = 1;
-         this.Image = invaderImage;
-         this.width = invaderImage.width * invaderscale;
-         this.height = invaderImage.height * invaderscale;
+class Invader {
+   constructor({position, type}) {
+     this.velocity = {
+       x: 0,
+       y: 0
+     };
+     
+     this.Image = null; // Initialize the Image property to null
+ 
+     // Load the image and set it to the Image property when it's done loading
+     loadImage(GetInvaderImage(type))
+       .then((image) => {
+         const invaderscale = GetInvaderScale(type);
+         this.Image = image;
+         this.invaderScore = GetInvaderScore(type);
+         this.width = image.width * invaderscale[0];
+         this.height = image.height * invaderscale[1];
          this.position = {
-            x: position.x,
-            y: position.y
-         }
-      }
+           x: position.x,
+           y: position.y
+         };
+       })
+       .catch((error) => {
+         console.error(`Failed to load image: ${error}`);
+       });
    }
+ 
 
    draw(){
       context.drawImage(this.Image, this.position.x, this.position.y, this.width, this.height)
@@ -252,29 +257,41 @@ class Invader{
 
 class Grid {
    constructor() {
-      this.position = {
-         x: 0,
-         y: 200
-      }
-   
-      this.velocity = {
-         x: 5,
-         y: 0
+     this.position = {
+       x: 0,
+       y: 200
+     }
+     
+     this.velocity = {
+       x: 5,
+       y: 0
+     }
+ 
+     this.invaders = [];
+     const rowInvaders = 4;
+     const colInvaders = 5;
+     this.width = colInvaders * 30;
+     let type = 1;
+     for (let x = 0; x < colInvaders; x++) {
+       for (let y = 0; y < rowInvaders; y++) {
+         if (y > 0 && y % 3 === 0){
+            this.invaders.push(new Invader({position: {x: x * 60 - 15, y: y * 60 - 15}, type}));
+            type++;
+            break;
          }
-
-      this.invaders = []
-      rowInvaders = 4;
-      colInvaders = 5;
-      this.width = colInvaders * 30;
-
-      for (let x = 0; x < colInvaders; x++) {
-         for (let y = 0; y < rowInvaders; y++){
-            this.invaders.push(new Invader({position: {x: x * 30, y: y * 30}}))
-         }
-      }
+         this.invaders.push(new Invader({position: {x: x * 60, y: y * 60}, type}));
+         type++;
+       }
+     }
    }
-
+ 
    update(){
+      if (timeElapsed > 0 && timeElapsed % 5 === 0 && frames % 301 === 0 && gridCounter < 5) {
+         console.log("enter update grid speed")
+         console.log(timeElapsed, this.velocity, frames)
+         this.velocity = {x: this.velocity.x * 1.2, y: this.velocity.y};
+         gridCounter++;
+      }
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
       if(this.position.x + this.width >= canvas.width || this.position.x <= 0) {
@@ -310,6 +327,10 @@ var allUsers = []
 function animate() {
    if (!game.active) {
       showPage('GameOver');
+      return
+   }
+   if (game.over) {
+      GameOver(1,score,timeElapsed);
       return
    }
 
@@ -363,20 +384,24 @@ function animate() {
             }, 0)
             createParticles({object: player, how_many:50, fade: true, color: 'white'}); // ship explode
             hit_good.play()
+            MoveShipToMiddle()
             if (lives > 1) {
                lives = lives - 1;
+               console.log("kives: ", lives)
                livesEl.innerHTML = lives;
             }
             else {
                setTimeout(() => {
                   game.active = false;
-               }, 2000)
+               }, 0)
                lives = lives - 1;
                livesEl.innerHTML = lives;
+               console.log("kives: ", lives)
                console.log("You Lost")
                player.opacity = 0;
                game.over = true;
                GameOver(2, score, timeElapsed)
+               return;
             }
       }
    })
@@ -417,9 +442,14 @@ function animate() {
                   const projectileFound = projectiles.find((projectile2) => projectile2 === projectile)
                
                   if(invaderFound && projectileFound) { // actual deletion from arays
-                     score +=100;
+                     // if(score + invader.invaderScore > 250){
+                     //    score = 250;
+                     // }
+                     // else {
+                     //    score += invader.invaderScore;
+                     // }
+                     score += invader.invaderScore;
                      scoreEl.innerHTML = score;
-                     console.log(score);
                      createParticles({object: invader, how_many:15, fade: true, color: '#BAA0DE'});
                      hit_bad.play()
                      grid.invaders.splice(i, 1);
@@ -433,10 +463,8 @@ function animate() {
                      }
                      else {
                         grids.splice(gridIndex, 1)
-                        console.log("Chanpion!");
-                        console.log(grids);
+                        console.log("Champion!");
                         game.over = true;
-                        GameOver(1, score, timeElapsed)
                      }
                   }
                }, 0)
@@ -446,7 +474,6 @@ function animate() {
    })
 
 
-   // move our ship to all directions        TODO: FIX rotation!!
    if (keys.right.pressed && player.position.x + player.width <= canvas.width){
       player.velocity.x = shipSpeed;
       player.rotation = shipRotetion;
@@ -462,7 +489,7 @@ function animate() {
       player.rotation = 0
   }
   
-  if (keys.up.pressed && player.position.y > (0.6 * canvas.height - player.height))
+  if (keys.up.pressed && player.position.y > (0.6 * canvas.height))
       player.velocity.y = -shipSpeed
 
   else if (keys.down.pressed && player.position.y <= canvas.height - player.height)
@@ -477,7 +504,7 @@ function animate() {
    if(frames === 0) {
       grids.push(new Grid())
       frames = 0;
-   }  
+   }
 
    frames++; // finished one loop of animation
    invadersShots++;
@@ -485,12 +512,13 @@ function animate() {
 
 
 function GameOver(gameOverType, score, gameTime) {
+   console.log("type: ", gameOverType)
    resetTimer()
    game_music.pause();
-   // InAGame = 0;
+
    // Clear the message and score elements
    if(gameOverType===1) {
-      document.getElementById('GameOverMessage').innerHTML = 'Chanpion!'
+      document.getElementById('GameOverMessage').innerHTML = 'Champion!'
    }
    else if(gameOverType===2) {
       document.getElementById('GameOverMessage').innerHTML = 'You Lost'
@@ -502,15 +530,9 @@ function GameOver(gameOverType, score, gameTime) {
       document.getElementById('GameOverMessage').innerHTML = 'Winner!'
    }
    else if(gameOverType === 4) {
-      console.log("exiting")
       resetTimer()
       return;
    }
-   else {
-      document.getElementById('message').innerHTML = 'Chanpion!'
-   }
-   // document.getElementById('message').innerHTML = '';
-   // document.getElementById('score1').innerHTML = '';
 
    // Add the user's score to the high scores array
    var now = new Date().toLocaleString();
@@ -544,8 +566,6 @@ function GameOver(gameOverType, score, gameTime) {
    // Show the Game Over page
    showPage('GameOver');
 
-   // Play the game over sound effect
-   // GameOverSound.play();
 }
 
 
@@ -577,6 +597,7 @@ function setUpGame() {
    hit_good = document.getElementById("hit_good");
    shot_sound = document.getElementById("shot_sound");
    game_music.currentTime = 0
+   gridCounter = 1;
 }
 
 
@@ -585,17 +606,12 @@ function newGame(){
       setUpGame()
       showPage("play_game");
       animate();
-      startTimer(Game_Time * 60); // change time!!!
+      startTimer(Game_Time * 60);
       game_music.play();
 }
 
 
 function PlayAgain() {
-   // game.active = true;
-   // console.log("play again")
-   // startedNewGame = true;
-   // setUpGame()
-   // showPage("play_game");
    newGame();
    return;
 }
@@ -618,8 +634,7 @@ function startTimer(time) {
      timerEl.innerHTML = formatTime(timeRemaining);
      if (timeRemaining === 0) {
       clearInterval(timerInterval);
-      console.log("times up", timeElapsed);
-      game.active = false; // maybe change to something else!!
+      game.active = false;
       GameOver(3, score, timeElapsed)
      }
    }, 1000);
@@ -661,16 +676,20 @@ window.addEventListener('keydown', ({key}) => {
          break;
       case shooting_Key:
          keys.shoot.pressed = true;
-         projectiles.push(new Projectile({
-            position: {
-               x: player.position.x + player.width / 2,
-               y : player.position.y 
-            },
-            velocity: {
-               x: 0,
-               y: projectileSpeed
-            }
-         }))
+         if(FlagShoot) {
+            projectiles.push(new Projectile({
+               position: {
+                  x: player.position.x + player.width / 2,
+                  y : player.position.y 
+               },
+               velocity: {
+                  x: 0,
+                  y: projectileSpeed
+               }
+            }))
+            FlagShoot = false;
+         }
+
          break;
    }
 })
@@ -691,8 +710,8 @@ window.addEventListener('keyup', ({key}) => {
          break;
       // case ' ':
       case shooting_Key:   
-         // keys.space.pressed = false;
          keys.shoot.pressed = false;
+         FlagShoot = true;
          break;
    }
 })
@@ -742,7 +761,6 @@ function showPage(pageId) {
       return;
    }
    // if(pageId !=='play_game') {
-   //    console.log("trying")
    //    GameOver(4, 2, 2)
    // }
    document.getElementById('signupPage').style.display = 'none';
@@ -842,14 +860,12 @@ function signUp() {
    document.getElementById("dob").value = "";
    error.innerText = "";
 
-   console.log(allUsers)
    alert("User created successfully!");
 
 }
 
 
 function logIn() {
-   console.log(allUsers)
    const username = document.getElementById("log_in_username").value;
    const password = document.getElementById("log_in_password").value;
 
@@ -857,6 +873,8 @@ function logIn() {
       logedIn = 1;
       document.getElementById("log_in_username").value = "";
       document.getElementById("log_in_password").value = "";
+      if(currentUser !== 1) myScores = [];
+      currentUser = 1
       showPage('configurationPage');
       return;
    }
@@ -865,6 +883,7 @@ function logIn() {
    
    if (user) {
       logedIn = 1;
+      if (currentUser !== user) myScores = [];
       currentUser = user;
       document.getElementById("log_in_username").value = "";
       document.getElementById("log_in_password").value = "";
@@ -885,22 +904,93 @@ document.getElementById('shoot_key').addEventListener('keydown', (event) => {
    if(shootingKey === ' '){
       document.getElementById('shoot_key').value = 'Space'
       return;
-   } 
+   }
    document.getElementById('shoot_key').value = shootingKey; // update the input field with the new value
 });
 
 function saveConfiguration() {
-   shooting_Key = document.getElementById('shoot_key').value
-   if(shooting_Key === 'Space') shooting_Key = ' '
-   Game_Time = document.getElementById('game_duration').value
    // Get the error message elements
    const error = document.getElementById("configuration_input_error");
+   shooting_Key = document.getElementById('shoot_key').value
+   if (shooting_Key === 'ArrowUp' || shooting_Key === 'ArrowLeft' || shooting_Key === 'ArrowDown' || shooting_Key === 'ArrowRight') {
+      error.innerText = "Can't use keyboard arrows to shoot";
+      return;
+   }
+   if(shooting_Key === 'Space') shooting_Key = ' '
+   Game_Time = document.getElementById('game_duration').value
    if (Game_Time < 2) {
       error.innerText = "Game duration can't be less than 2 minutes";
       return;
    }
    newGame();
 }
+
+
+function GetInvaderImage(type) {
+   if (type === 1 || type === 5 || type ===  9 || type === 13 || type === 17) {
+      return 'invader.png'
+   }
+   else if (type === 2 || type === 6 || type ===  10 || type === 14 || type === 18) {
+      return 'red.png'
+   }
+   else if (type === 3 || type === 7 || type ===  11 || type === 15 || type === 19) {
+      return 'green.png'
+   }
+   else if (type === 4 || type === 8 || type ===  12 || type === 16 || type === 20){
+      return 'yellow.png'
+   }
+}
+
+function GetInvaderScore(type) {
+   if (type === 1 || type === 5 || type ===  9 || type === 13 || type === 17) {
+      return 20;
+   }
+   else if (type === 2 || type === 6 || type ===  10 || type === 14 || type === 18) {
+      return 10;
+   }
+   else if (type === 3 || type === 7 || type ===  11 || type === 15 || type === 19) {
+      return 15;
+   }
+   else if (type === 4 || type === 8 || type ===  12 || type === 16 || type === 20) {
+      return 5;
+   }
+}
+
+function GetInvaderScale(type) {
+   if (type === 1 || type === 5 || type ===  9 || type === 13 || type === 17) {
+      return [1.5, 1.5];
+   }
+   else if (type === 2 || type === 6 || type ===  10 || type === 14 || type === 18) {
+      return [0.088,0.088];
+   }
+   else if (type === 3 || type === 7 || type ===  11 || type === 15 || type === 19) {
+      return [0.059,0.059];
+   }
+   else if (type === 4 || type === 8 || type ===  12 || type === 16 || type === 20) {
+      return [0.015, 0.015];
+   }
+}
+
+function loadImage(src) {
+   return new Promise((resolve, reject) => {
+     const image = new Image();
+     image.onload = () => {
+       resolve(image);
+     };
+     image.onerror = (error) => {
+       reject(error);
+     };
+     image.src = src;
+   });
+ }
+
+ function MoveShipToMiddle() {
+   player.position = {
+      x: canvas.width / 2 - player.width / 2,
+      y: canvas.height - player.height - 30
+   };
+}
+
 
    const openModalButtons = document.querySelectorAll('[data-modal-target]')
    const closeModalButtons = document.querySelectorAll('[data-close-button]')
